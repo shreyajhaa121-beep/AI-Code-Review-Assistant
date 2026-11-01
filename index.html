@@ -226,6 +226,28 @@ footer {
   font-size: 13px;
 }
 
+
+  .action-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.secondary-btn {
+  background: #334155;
+  border: 1px solid #475569;
+}
+
+.secondary-btn:hover {
+  background: #475569;
+}
+
+@media (max-width: 600px) {
+  .action-buttons {
+    flex-direction: column;
+  }
+}
+
 @media (max-width: 600px) {
   header {
     padding: 16px 5%;
@@ -320,6 +342,16 @@ footer {
       placeholder="Paste your JavaScript code here..."></textarea>
 
     <button onclick="reviewCode()">Analyse Code</button>
+
+    <div class="action-buttons">
+  <button class="secondary-btn" onclick="loadSample()">
+    Load Sample
+  </button>
+
+  <button class="secondary-btn" onclick="resetCode()">
+    Reset Code
+  </button>
+    </div>
   </section>
 
   <section class="results-section">
@@ -465,6 +497,37 @@ function reviewCode() {
 
     results.appendChild(card);
   });
+}
+
+  function loadSample() {
+  document.getElementById("codeInput").value =
+`var student = "Hello";
+console.log(student);
+// TODO: complete this task`;
+
+  reviewCode();
+}
+
+function resetCode() {
+  document.getElementById("codeInput").value = "";
+
+  document.getElementById("score").textContent = "--";
+  document.getElementById("total").textContent = "0";
+  document.getElementById("warnings").textContent = "0";
+
+  document.getElementById("results").innerHTML = "";
+
+  const summary = document.getElementById("summary");
+  summary.innerHTML = "";
+
+  const heading = document.createElement("h3");
+  heading.textContent = "Waiting for analysis";
+
+  const description = document.createElement("p");
+  description.textContent = "Enter your code and click Analyse Code.";
+
+  summary.appendChild(heading);
+  summary.appendChild(description);
 }
 </script>
 
