@@ -1,1 +1,186 @@
-index
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Code Review Assistant</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #101827;
+      color: #ffffff;
+      padding: 24px 16px;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: auto;
+    }
+
+    h1 {
+      color: #60a5fa;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #cbd5e1;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 260px;
+      padding: 15px;
+      background: #1e293b;
+      color: #ffffff;
+      border: 1px solid #475569;
+      border-radius: 10px;
+      font-family: monospace;
+      font-size: 14px;
+      resize: vertical;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 13px 22px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    #results {
+      margin-top: 25px;
+    }
+
+    .finding {
+      background: #1e293b;
+      border-left: 4px solid #f59e0b;
+      padding: 15px;
+      margin-bottom: 12px;
+      border-radius: 7px;
+    }
+
+    .finding h3 {
+      margin-bottom: 7px;
+      color: #fbbf24;
+    }
+
+    .finding p {
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    .success {
+      color: #4ade80;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>AI Code Review Assistant</h1>
+
+    <p class="subtitle">
+      Review your code and find possible issues with simple code analysis.
+    </p>
+
+    <textarea id="codeInput" placeholder="Paste your code here..."></textarea>
+
+    <button onclick="reviewCode()">Review Code</button>
+
+    <div id="results"></div>
+  </div>
+
+  <script>
+    function reviewCode() {
+      const code = document.getElementById("codeInput").value;
+      const results = document.getElementById("results");
+
+      results.innerHTML = "";
+
+      if (code.trim() === "") {
+        results.textContent = "Please enter some code first.";
+        return;
+      }
+
+      const findings = [];
+
+      if (code.includes("TODO")) {
+        findings.push({
+          title: "TODO Comment Found",
+          message: "Check whether this unfinished task needs to be completed."
+        });
+      }
+
+      if (code.includes("console.log")) {
+        findings.push({
+          title: "Console Log Found",
+          message: "Remove unnecessary debugging logs before production."
+        });
+      }
+
+      if (/\bvar\b/.test(code)) {
+        findings.push({
+          title: "Consider let or const",
+          message: "In JavaScript, let or const is generally preferred over var."
+        });
+      }
+
+      if (code.includes("==") && !code.includes("===")) {
+        findings.push({
+          title: "Equality Check",
+          message: "Check whether strict equality (===) is more appropriate."
+        });
+      }
+
+      const longLines = code.split("\n").filter(line => line.length > 100);
+
+      if (longLines.length > 0) {
+        findings.push({
+          title: "Long Lines Found",
+          message: longLines.length + " line(s) contain more than 100 characters."
+        });
+      }
+
+      if (findings.length === 0) {
+        const message = document.createElement("p");
+        message.className = "success";
+        message.textContent = "No issues found by these basic checks.";
+        results.appendChild(message);
+        return;
+      }
+
+      findings.forEach(finding => {
+        const card = document.createElement("div");
+        card.className = "finding";
+
+        const heading = document.createElement("h3");
+        heading.textContent = finding.title;
+
+        const description = document.createElement("p");
+        description.textContent = finding.message;
+
+        card.appendChild(heading);
+        card.appendChild(description);
+        results.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>
