@@ -1,186 +1,472 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Code Review Assistant</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Code Review Assistant</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #101827;
-      color: #ffffff;
-      padding: 24px 16px;
-    }
+body {
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #f8fafc;
+}
 
-    .container {
-      max-width: 850px;
-      margin: auto;
-    }
+header {
+  background: #172238;
+  border-bottom: 1px solid #334155;
+  padding: 18px 6%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
 
-    h1 {
-      color: #60a5fa;
-      margin-bottom: 10px;
-    }
+.logo {
+  font-size: 21px;
+  font-weight: bold;
+  color: #60a5fa;
+}
 
-    .subtitle {
-      color: #cbd5e1;
-      margin-bottom: 24px;
-      line-height: 1.5;
-    }
+.status {
+  background: #123b32;
+  color: #4ade80;
+  padding: 7px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+}
 
-    textarea {
-      width: 100%;
-      min-height: 260px;
-      padding: 15px;
-      background: #1e293b;
-      color: #ffffff;
-      border: 1px solid #475569;
-      border-radius: 10px;
-      font-family: monospace;
-      font-size: 14px;
-      resize: vertical;
-    }
+.container {
+  width: 90%;
+  max-width: 1100px;
+  margin: 35px auto;
+}
 
-    button {
-      margin-top: 15px;
-      padding: 13px 22px;
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-    }
+.welcome h1 {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
 
-    button:hover {
-      background: #1d4ed8;
-    }
+.welcome p {
+  color: #94a3b8;
+  line-height: 1.6;
+}
 
-    #results {
-      margin-top: 25px;
-    }
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 28px 0;
+}
 
-    .finding {
-      background: #1e293b;
-      border-left: 4px solid #f59e0b;
-      padding: 15px;
-      margin-bottom: 12px;
-      border-radius: 7px;
-    }
+.stat-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 20px;
+}
 
-    .finding h3 {
-      margin-bottom: 7px;
-      color: #fbbf24;
-    }
+.stat-card p {
+  color: #94a3b8;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
 
-    .finding p {
-      color: #cbd5e1;
-      line-height: 1.5;
-    }
+.stat-card h2 {
+  font-size: 27px;
+}
 
-    .success {
-      color: #4ade80;
-      margin-top: 15px;
-    }
-  </style>
+.editor-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  padding: 22px;
+  border-radius: 12px;
+}
+
+.editor-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+select {
+  background: #0f172a;
+  color: white;
+  border: 1px solid #475569;
+  border-radius: 7px;
+  padding: 10px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 260px;
+  resize: vertical;
+  background: #0b1220;
+  color: #e2e8f0;
+  border: 1px solid #475569;
+  border-radius: 9px;
+  padding: 16px;
+  font-family: monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 13px 22px;
+  margin-top: 16px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+.results-section {
+  margin-top: 32px;
+}
+
+.results-section h2 {
+  margin-bottom: 18px;
+}
+
+.result-summary {
+  background: #1e293b;
+  border: 1px solid #334155;
+  padding: 18px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+}
+
+.result-summary p {
+  color: #94a3b8;
+  margin-top: 8px;
+}
+
+.finding {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-left: 5px solid #f59e0b;
+  border-radius: 9px;
+  padding: 17px;
+  margin-bottom: 13px;
+}
+
+.finding.error {
+  border-left-color: #ef4444;
+}
+
+.finding.warning {
+  border-left-color: #f59e0b;
+}
+
+.finding.info {
+  border-left-color: #3b82f6;
+}
+
+.finding h3 {
+  margin-bottom: 9px;
+  font-size: 16px;
+}
+
+.finding p {
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.severity {
+  display: inline-block;
+  font-size: 11px;
+  padding: 5px 9px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+
+.error .severity {
+  background: #451a1a;
+  color: #fca5a5;
+}
+
+.warning .severity {
+  background: #422006;
+  color: #fcd34d;
+}
+
+.info .severity {
+  background: #172554;
+  color: #93c5fd;
+}
+
+.empty {
+  color: #4ade80;
+  padding: 18px;
+  background: #123b32;
+  border-radius: 9px;
+}
+
+footer {
+  text-align: center;
+  padding: 30px 15px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+@media (max-width: 600px) {
+  header {
+    padding: 16px 5%;
+  }
+
+  .logo {
+    font-size: 17px;
+  }
+
+  .container {
+    width: 92%;
+    margin: 25px auto;
+  }
+
+  .welcome h1 {
+    font-size: 25px;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .stat-card h2 {
+    font-size: 23px;
+  }
+
+  .editor-card {
+    padding: 15px;
+  }
+
+  textarea {
+    min-height: 220px;
+    font-size: 13px;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+</style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>AI Code Review Assistant</h1>
 
-    <p class="subtitle">
-      Review your code and find possible issues with simple code analysis.
+<header>
+  <div class="logo">CodeReview AI</div>
+  <div class="status">● System Ready</div>
+</header>
+
+<main class="container">
+
+  <section class="welcome">
+    <h1>Code Review Dashboard</h1>
+    <p>
+      Analyse your code, identify possible issues
+      and improve code quality.
     </p>
+  </section>
 
-    <textarea id="codeInput" placeholder="Paste your code here..."></textarea>
+  <section class="stats">
+    <div class="stat-card">
+      <p>Code Quality Score</p>
+      <h2 id="score">--</h2>
+    </div>
 
-    <button onclick="reviewCode()">Review Code</button>
+    <div class="stat-card">
+      <p>Total Issues</p>
+      <h2 id="total">0</h2>
+    </div>
+
+    <div class="stat-card">
+      <p>Warnings</p>
+      <h2 id="warnings">0</h2>
+    </div>
+  </section>
+
+  <section class="editor-card">
+    <div class="editor-top">
+      <h2>Code Editor</h2>
+
+      <select id="language">
+        <option value="javascript">JavaScript</option>
+      </select>
+    </div>
+
+    <textarea id="codeInput"
+      placeholder="Paste your JavaScript code here..."></textarea>
+
+    <button onclick="reviewCode()">Analyse Code</button>
+  </section>
+
+  <section class="results-section">
+    <h2>Review Report</h2>
+
+    <div id="summary" class="result-summary">
+      <h3>Waiting for analysis</h3>
+      <p>Enter your code and click Analyse Code.</p>
+    </div>
 
     <div id="results"></div>
-  </div>
+  </section>
 
-  <script>
-    function reviewCode() {
-      const code = document.getElementById("codeInput").value;
-      const results = document.getElementById("results");
+</main>
 
-      results.innerHTML = "";
+<footer>
+  AI Code Review Assistant | Built for Learning
+  <br><br>
+  Rule-based code analysis — AI integration planned.
+</footer>
 
-      if (code.trim() === "") {
-        results.textContent = "Please enter some code first.";
-        return;
-      }
+<script>
+function reviewCode() {
 
-      const findings = [];
+  const code = document.getElementById("codeInput").value;
+  const results = document.getElementById("results");
+  const summary = document.getElementById("summary");
 
-      if (code.includes("TODO")) {
-        findings.push({
-          title: "TODO Comment Found",
-          message: "Check whether this unfinished task needs to be completed."
-        });
-      }
+  results.innerHTML = "";
 
-      if (code.includes("console.log")) {
-        findings.push({
-          title: "Console Log Found",
-          message: "Remove unnecessary debugging logs before production."
-        });
-      }
+  if (code.trim() === "") {
+    summary.textContent = "Please enter your code first.";
+    return;
+  }
 
-      if (/\bvar\b/.test(code)) {
-        findings.push({
-          title: "Consider let or const",
-          message: "In JavaScript, let or const is generally preferred over var."
-        });
-      }
+  const findings = [];
 
-      if (code.includes("==") && !code.includes("===")) {
-        findings.push({
-          title: "Equality Check",
-          message: "Check whether strict equality (===) is more appropriate."
-        });
-      }
+  function addFinding(title, message, severity) {
+    findings.push({ title, message, severity });
+  }
 
-      const longLines = code.split("\n").filter(line => line.length > 100);
+  if (code.includes("TODO")) {
+    addFinding(
+      "TODO Comment Found",
+      "Check whether this unfinished task needs to be completed.",
+      "warning"
+    );
+  }
 
-      if (longLines.length > 0) {
-        findings.push({
-          title: "Long Lines Found",
-          message: longLines.length + " line(s) contain more than 100 characters."
-        });
-      }
+  if (code.includes("console.log")) {
+    addFinding(
+      "Console Log Found",
+      "Remove unnecessary debugging logs before production.",
+      "info"
+    );
+  }
 
-      if (findings.length === 0) {
-        const message = document.createElement("p");
-        message.className = "success";
-        message.textContent = "No issues found by these basic checks.";
-        results.appendChild(message);
-        return;
-      }
+  if (/\bvar\b/.test(code)) {
+    addFinding(
+      "Consider let or const",
+      "In JavaScript, let or const is generally preferred over var.",
+      "warning"
+    );
+  }
 
-      findings.forEach(finding => {
-        const card = document.createElement("div");
-        card.className = "finding";
+  if (/(^|[^=!])==(?!=)/m.test(code)) {
+    addFinding(
+      "Loose Equality Check",
+      "Consider using strict equality (===) where appropriate.",
+      "warning"
+    );
+  }
 
-        const heading = document.createElement("h3");
-        heading.textContent = finding.title;
+  const longLines = code.split("\n").filter(
+    line => line.length > 100
+  );
 
-        const description = document.createElement("p");
-        description.textContent = finding.message;
+  if (longLines.length > 0) {
+    addFinding(
+      "Long Lines Found",
+      longLines.length + " line(s) contain more than 100 characters.",
+      "info"
+    );
+  }
 
-        card.appendChild(heading);
-        card.appendChild(description);
-        results.appendChild(card);
-      });
-    }
-  </script>
+  const warningCount = findings.filter(
+    item => item.severity === "warning"
+  ).length;
+
+  const errorCount = findings.filter(
+    item => item.severity === "error"
+  ).length;
+
+  const total = findings.length;
+  const score = Math.max(0, 100 - (warningCount * 10)
+    - (errorCount * 20) - (findings.filter(
+      item => item.severity === "info"
+    ).length * 5));
+
+  document.getElementById("score").textContent = score + "/100";
+  document.getElementById("total").textContent = total;
+  document.getElementById("warnings").textContent = warningCount;
+
+  summary.innerHTML = "";
+
+  const heading = document.createElement("h3");
+  heading.textContent = "Analysis Completed";
+
+  const description = document.createElement("p");
+  description.textContent =
+    total + " possible issue(s) found. Score: " + score + "/100.";
+
+  summary.appendChild(heading);
+  summary.appendChild(description);
+
+  if (total === 0) {
+    const message = document.createElement("div");
+    message.className = "empty";
+    message.textContent =
+      "No issues found by the current basic checks.";
+    results.appendChild(message);
+    return;
+  }
+
+  findings.forEach(item => {
+
+    const card = document.createElement("div");
+    card.className = "finding " + item.severity;
+
+    const badge = document.createElement("span");
+    badge.className = "severity";
+    badge.textContent = item.severity.toUpperCase();
+
+    const heading = document.createElement("h3");
+    heading.textContent = item.title;
+
+    const description = document.createElement("p");
+    description.textContent = item.message;
+
+    card.appendChild(badge);
+    card.appendChild(heading);
+    card.appendChild(description);
+
+    results.appendChild(card);
+  });
+}
+</script>
+
 </body>
 </html>
